@@ -4,7 +4,9 @@ public class Main {
 
     public static void main(String[] args) {
         Memoria m = new Memoria();
-        m.editarMemoria(10,5);
+        for (int i = 0; i < 128; i++){
+            m.mudaMemoria(i, i);
+        }
         m.mostraMemoria();
     }
 }

@@ -25,5 +25,12 @@ public class Memoria {
             System.out.print("\n");
         }
     }
+
+    public void mudaMemoria(int endereco, int valor){
+        int i = endereco / 8;
+        int j = endereco % 8;
+
+        memoria[i][j] = valor;
+    }
 }
 
