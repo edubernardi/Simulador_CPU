@@ -25,11 +25,5 @@ public class Memoria {
             System.out.print("\n");
         }
     }
-
-    public void editarMemoria(int endereco, int novoValor){
-        int i = ;
-        int j = ;
-        memoria[i][j] = novoValor;
-    }
 }
 
