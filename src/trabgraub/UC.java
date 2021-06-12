@@ -1,5 +1,8 @@
 package trabgraub;
 
+import java.sql.SQLOutput;
+import java.util.ArrayList;
+
 public class UC {
     //responsavel pelas operacoes que devem ser realizadas e quando devem ser realizadas (controla ula e udi)
     private Memoria mem;
@@ -7,6 +10,8 @@ public class UC {
     private Teclado tc;
     private UDI udi;
     private Registrador PC;
+    private ArrayList<Usuario> usuarios = new ArrayList<Usuario>();
+    private Usuario usuarioLogado;
 
     public UC() {
         mem = new Memoria();
@@ -14,16 +19,18 @@ public class UC {
         tc = new Teclado();
         udi = new UDI();
         PC = new Registrador();
+        usuarios.add(new Usuario("admin", "admin"));
     }
 
     public void rodar(){
-        boolean run = true;
+        boolean run = login();
         while (run){
             System.out.println( "============= MENU ============");
             System.out.println("Opções: \n1 - Carregar programa na memória\n2 - Executar o programa" +
                     "\n3 - Alterar posição de memória\n4 - Alterar registrador" +
                     "\n5 - Mostrar memória e registrador\n6 - Mostrar instruções" +
-                    "\n7 - Gravar programa em arquivo\n8 - Ajuda\n9 - Sair");
+                    "\n7 - Gravar programa em arquivo\n8 - Ajuda\n9 - Sair (Logout)" +
+                    "\n0 - Opcoes de administrador");
             int op = tc.leInt();
             switch (op){
                 case 1:
@@ -64,14 +71,23 @@ public class UC {
                     break;
                 case 9:
                     System.out.println("Saindo...");
-                    run = false;
+                    run = login();
                     break;
+                case 0:
+                    if (usuarioLogado.isAdm()){
+                        opAdm();
+                    } else {
+                        System.out.println("Usuario atual nao possiu permissao de administrador");
+                    }
+                    break;
+                default:
+                    System.out.println("Opcao invalida");
             }
         }
     }
 
     public void executarPrograma(){
-        boolean executando = true;
+        boolean executando = login();
         while (executando){
             String op = udi.decodifica(mem.getMemoria(PC.getValor()));
             if (!op.equals("NOT")) {
@@ -188,7 +204,57 @@ public class UC {
     public void ajuda(){
 
     }
+
+    private boolean login(){
+        while (true){
+            String username = tc.leString("Nome de usuario: ");
+            String password = tc.leString("Senha: ");
+            for (Usuario u : usuarios){
+                if (u.login(username, password)){
+                    usuarioLogado = u;
+                    return true;
+                }
+            }
+            System.out.println("Usuario nao encontrado, tente novamente");
+        }
+    }
+
+    private void opAdm(){
+        switch (tc.leInt("Opcoes\n1. Cadastrar usuario\n2. Remover usuario\n3. Listar usuario")){
+            case 1:
+                cadastrarUsuario(new Usuario(tc.leString("Nome: "), tc.leString("Senha: ")));
+                break;
+            case 2:
+                removerUsuario(new Usuario(tc.leString("Nome: "), tc.leString("Senha: ")));
+                break;
+            case 3:
+                listarUsuarios();
+                break;
+            default:
+                System.out.println("Opcao invalida");
+        }
+
+    }
+
+    private void cadastrarUsuario(Usuario novoUsuario){
+        for (Usuario usuario : usuarios){
+            if (novoUsuario.getUsername().equals(usuario)){
+                System.out.println("Erro, nome de usuario ja cadastrado");
+                return;
+            }
+        }
+        usuarios.add(novoUsuario);
+    }
+
+    private void removerUsuario(Usuario usuario){
+        usuarios.removeIf(u -> usuario.getUsername().equals(u.getUsername()));
+    }
+
+    private void listarUsuarios(){
+        for (Usuario usuario : usuarios){
+            System.out.println(usuario.toString());
+        }
+    }
+
 }
-
-
 
