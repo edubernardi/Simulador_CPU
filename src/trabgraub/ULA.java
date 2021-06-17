@@ -10,8 +10,6 @@ public class ULA {
         A = new Registrador();
         B = new Registrador();
         C = new Registrador();
-
-
     }
 
     public void sum(){
