@@ -44,9 +44,13 @@ public class UC {
                     executarPrograma();
                     break;
                 case 3:
-                    int endereco = tc.leInt("Digite o endereço:");
-                    int valor = tc.leInt("Digite o valor");
-                    alterarPosicaoDeMemoria(endereco, valor);
+                    String endereco = tc.leString("Digite o endereço:");
+                    String valor = tc.leString("Digite o valor");
+                    try{
+                        alterarPosicaoDeMemoria(Integer.parseInt(endereco, 16), Integer.parseInt(valor, 16));
+                    } catch (Exception E){
+                        System.out.println("Valor invalido");
+                    }
                     break;
                 case 4:
                     alterarRegistrador();
@@ -202,32 +206,39 @@ public class UC {
         String var1 = tc.leString("Qual registrador deseja alterar: [A,B,C ou PC]?");
         var1 = var1.toUpperCase();
 
+        String valor = tc.leString("Novo valor:");
+
+        Integer valorInt = 0;
+
+        try {
+            valorInt = Integer.parseInt(valor, 16);
+        } catch (Exception e){
+            System.out.println("Valor invalido");
+            return;
+        }
+
         switch (var1) {
             case "A" -> {
-                int valA = tc.leInt("Digite o valor do Registrador A:");
-                ula.setA(valA);
+                ula.setA(valorInt);
             }
             case "B" -> {
-                int valB = tc.leInt("Digite o valor do Registrador B:");
-                ula.setB(valB);
+                ula.setB(valorInt);
             }
             case "C" -> {
-                int valC = tc.leInt("Digite o valor do Registrador C:");
-                ula.setC(valC);
+                ula.setC(valorInt);
             }
             case "PC" -> {
-                int valPC = tc.leInt("Digite o valor do Registrador PC:");
-                PC.setValor(valPC);
+                PC.setValor(valorInt);
             }
-            default -> System.out.println("Valor inválido!");
+            default -> System.out.println("Registrador inválido!");
         }
     }
 
     public void mostrarRegistradores() {
-        System.out.print("Registrador A: " + String.format("0x%08X", ula.getA().getValor()).substring(8));
-        System.out.print(" Registrador B: " + String.format("0x%08X", ula.getB().getValor()).substring(8));
-        System.out.print("\nRegistrador C: " + String.format("0x%08X", ula.getC().getValor()).substring(8));
-        System.out.print(" Registrador PC: " + String.format("0x%08X", PC.getValor()).substring(8) + "\n");
+        System.out.print("Registrador A: " + String.format("0x%08X", ula.getA().getValor()).substring(8)
+                        + "\nRegistrador B: " + String.format("0x%08X", ula.getB().getValor()).substring(8)
+                        + "\nRegistrador C: " + String.format("0x%08X", ula.getC().getValor()).substring(8)
+                        + "\nRegistrador PC: " + String.format("0x%08X", PC.getValor()).substring(8) + "\n");
     }
 
     public void mostrarMemoria(int localizacao) {
